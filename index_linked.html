@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodShare - Reduce Food Waste, Feed Communities</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Leaflet CSS (OpenStreetMap) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+            color: white;
+            padding: 80px 0;
+        }
+
+        .feature-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-counter {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2e7d32;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand text-success" href="index_linked.html">
+                <i class="fas fa-leaf me-2"></i>FoodShare
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="donate_linked.html">Donate Food</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#map-section">Find Food</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex">
+                    <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="fas fa-sign-in-alt me-1"></i>Login
+                    </button>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#registerModal">
+                        <i class="fas fa-user-plus me-1"></i>Sign Up
+                    </button>
+                    <button class="btn btn-outline-warning me-2" data-bs-toggle="modal" data-bs-target="#adminLoginModal">
+                        <i class="fas fa-user-shield me-1"></i>Admin
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">
+                        Reduce Food Waste,<br>
+                        <span class="text-warning">Feed Communities</span>
+                    </h1>
+                    <p class="lead mb-4">
+                        Connect food donors with those in need. Every meal saved makes a difference
+                        in reducing waste and fighting hunger in your community.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="donate_linked.html" class="btn btn-warning btn-lg px-4">
+                            <i class="fas fa-plus me-2"></i>Donate Food
+                        </a>
+                        <button class="btn btn-outline-light btn-lg px-4" onclick="showFindFood()">
+                            <i class="fas fa-search me-2"></i>Find Food
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="text-center">
+                        <i class="fas fa-heart fa-5x text-warning mb-3"></i>
+                        <div class="stats-counter" id="mealsSaved">0</div>
+                        <p class="mb-0">Meals Saved This Month</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5 bg-light" id="features">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="display-5 fw-bold">How FoodShare Works</h2>
+                    <p class="lead text-muted">Simple steps to make a big impact</p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-box-open fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">1. Post Your Surplus</h5>
+                            <p class="card-text text-muted">
+                                Restaurants, grocery stores, and households can easily post available food items
+                                with details like quantity, expiry date, and pickup location.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-search fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">2. Find & Request</h5>
+                            <p class="card-text text-muted">
+                                NGOs, shelters, and individuals can browse available food, filter by location
+                                and preferences, and send pickup requests.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-handshake fa-3x text-warning"></i>
+                            </div>
+                            <h5 class="card-title">3. Pickup & Share</h5>
+                            <p class="card-text text-muted">
+                                Coordinate pickup times and locations. Track your impact and help
+                                build a community around reducing food waste.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-5" id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="display-5 fw-bold">About FoodShare</h2>
+                    <p class="lead text-muted">Learn more about our mission and the team behind it</p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow-sm">
+                        <div class="card-body p-5">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-leaf fa-4x text-success mb-3"></i>
+                                <h3 class="card-title mb-3">Our Mission</h3>
+                            </div>
+
+                            <p class="lead text-center mb-4">
+                                FoodShare is dedicated to reducing food waste while fighting hunger in communities.
+                                We believe that no food should go to waste when there are people in need.
+                            </p>
+
+                            <div class="row mt-5">
+                                <div class="col-md-6">
+                                    <h4 class="h5 mb-3">
+                                        <i class="fas fa-users text-success me-2"></i>Meet the Founders
+                                    </h4>
+                                    <div class="mb-4">
+                                        <h5 class="mb-2">Praful Thakur</h5>
+                                        <p class="text-muted mb-3">
+                                            Founder and lead developer of FoodShare. Passionate about using technology
+                                            to solve real-world problems and create positive social impact.
+                                        </p>
+
+                                        <h5 class="mb-2">Jatin Dadwal</h5>
+                                        <p class="text-muted">
+                                            Co-founder and business strategist. Dedicated to building sustainable solutions
+                                            that benefit both the environment and local communities.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h4 class="h5 mb-3">
+                                        <i class="fas fa-handshake text-success me-2"></i>Our Story
+                                    </h4>
+                                    <p class="text-muted mb-3">
+                                        FoodShare was born from a simple idea: what if we could connect those who have
+                                        surplus food with those who need it? Praful and Jatin worked together to transform
+                                        this vision into reality, combining their technical expertise and passion for social
+                                        good.
+                                    </p>
+                                    <p class="text-muted">
+                                        Through countless hours of collaboration, research, and development, they created
+                                        a platform that not only reduces food waste but also strengthens community bonds
+                                        and helps fight hunger in meaningful ways.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-5">
+                                <h4 class="h5 mb-3">
+                                    <i class="fas fa-envelope text-success me-2"></i>Contact Us
+                                </h4>
+                                <p class="mb-2">
+                                    <strong>Email:</strong>
+                                    <a href="mailto:rajputpraful791@gmail.com" class="text-decoration-none">
+                                        rajputpraful791@gmail.com
+                                    </a>
+                                </p>
+                                <p class="text-muted">
+                                    Have questions about FoodShare? Want to partner with us? We'd love to hear from you!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section - Full Width -->
+    <section class="py-5" id="map-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-4">
+                    <h2 class="display-5 fw-bold">Find Food Near You</h2>
+                    <p class="lead text-muted">Real-time interactive map showing available food donations across Himachal Pradesh</p>
+                </div>
+            </div>
+
+            <!-- Location Filter Controls -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="map-filter-bar">
+                        <button class="map-filter-btn active" onclick="filterMap('all', this)">
+                            <i class="fas fa-layer-group me-1"></i>All Locations (<span id="totalMapPins">6</span>)
+                        </button>
+                        <button class="map-filter-btn" onclick="filterMap('shimla', this)">
+                            <i class="fas fa-mountain me-1 text-success"></i>Shimla
+                        </button>
+                        <button class="map-filter-btn" onclick="filterMap('manali', this)">
+                            <i class="fas fa-tree me-1 text-info"></i>Manali
+                        </button>
+                        <button class="map-filter-btn" onclick="filterMap('dharamshala', this)">
+                            <i class="fas fa-om me-1 text-warning"></i>Dharamshala
+                        </button>
+                        <button class="map-filter-btn" onclick="filterMap('solan', this)">
+                            <i class="fas fa-apple-alt me-1 text-danger"></i>Solan
+                        </button>
+                        <button class="map-filter-btn" onclick="filterMap('mandi', this)">
+                            <i class="fas fa-landmark me-1 text-primary"></i>Mandi
+                        </button>
+                        <button class="map-filter-btn" onclick="locateUser(this)">
+                            <i class="fas fa-crosshairs me-1 text-success"></i>Near Me
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div id="map" style="height: 580px; width: 100%; border-radius: 15px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-5 bg-success text-white">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 mb-4">
+                    <div class="stats-counter" id="totalDonations">1,247</div>
+                    <p class="mb-0">Total Donations</p>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stats-counter" id="mealsServed">8,934</div>
+                    <p class="mb-0">Meals Served</p>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stats-counter" id="co2Saved">15,672</div>
+                    <p class="mb-0">kg CO₂ Saved</p>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stats-counter" id="activeUsers">342</div>
+                    <p class="mb-0">Active Users</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="text-success mb-3">
+                        <i class="fas fa-leaf me-2"></i>FoodShare
+                    </h5>
+                    <p class="text-muted">
+                        Connecting communities to reduce food waste and fight hunger.
+                        Every donation makes a difference.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="donate_linked.html" class="text-muted text-decoration-none">Donate Food</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Find Food</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">How It Works</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">About Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold">For Donors</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="donate_linked.html" class="text-muted text-decoration-none">Restaurants</a></li>
+                        <li><a href="donate_linked.html" class="text-muted text-decoration-none">Grocery Stores</a></li>
+                        <li><a href="donate_linked.html" class="text-muted text-decoration-none">Households</a></li>
+                        <li><a href="donate_linked.html" class="text-muted text-decoration-none">Food Banks</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold">For Receivers</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted text-decoration-none">NGOs</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Shelters</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Orphanages</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Individuals</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted">© 2024 FoodShare. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-muted text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-muted text-decoration-none">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Login to FoodShare</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Login as:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="userType" id="donorLogin" value="donor" checked>
+                                <label class="form-check-label" for="donorLogin">Food Donor</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="userType" id="receiverLogin" value="receiver">
+                                <label class="form-check-label" for="receiverLogin">Food Receiver</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Join FoodShare</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="mb-3">
+                            <label for="registerName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="registerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="registerEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="registerPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPhone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="registerPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerLocation" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="registerLocation" placeholder="City, State" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Register as:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="userType" id="donorRegister" value="donor" checked>
+                                <label class="form-check-label" for="donorRegister">Food Donor</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="userType" id="receiverRegister" value="receiver">
+                                <label class="form-check-label" for="receiverRegister">Food Receiver</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Create Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal fade" id="adminLoginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-shield me-2"></i>Admin Login
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Admin Access Only</strong><br>
+                        This section is restricted to authorized administrators only.
+                    </div>
+                    <form id="adminLoginForm">
+                        <div class="mb-3">
+                            <label for="adminUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="adminUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="adminPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login as Admin
+                        </button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Default credentials: admin / admin123
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Leaflet JS (OpenStreetMap) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Custom JavaScript -->
+    <script src="script_working.js"></script>
+
+    <!-- Interactive FoodShare Leaflet Map -->
+    <script>
+        // Global map and marker references
+        let mapInstance = null;
+        let allMarkers = [];
+
+        // City coordinates dictionary for Himachal Pradesh & dynamic donations
+        const cityCoordinates = {
+            shimla: { lat: 31.1048, lng: 77.1734 },
+            manali: { lat: 32.2396, lng: 77.1887 },
+            dharamshala: { lat: 32.2190, lng: 76.3234 },
+            solan: { lat: 30.9084, lng: 77.0999 },
+            mandi: { lat: 31.7087, lng: 76.9320 },
+            kullu: { lat: 31.9579, lng: 77.1095 },
+            bilaspur: { lat: 31.3260, lng: 76.7570 },
+            hamirpur: { lat: 31.6862, lng: 76.5213 },
+            kangra: { lat: 32.0998, lng: 76.2691 },
+            una: { lat: 31.4685, lng: 76.2708 },
+            chamba: { lat: 32.5534, lng: 76.1258 }
+        };
+
+        // Static Sample food locations in Himachal Pradesh
+        const sampleFoodLocations = [
+            {
+                id: 'loc-1',
+                name: "Shimla Community Kitchen",
+                address: "Mall Road, Shimla, Himachal Pradesh",
+                city: "shimla",
+                lat: 31.1048,
+                lng: 77.1734,
+                food: "Fresh vegetables and traditional meals",
+                quantity: "45 servings",
+                urgency: "Available",
+                pinColor: "pin-green",
+                icon: "fa-utensils",
+                donor: "Himachal Seva Trust",
+                phone: "+91 98765 43210"
+            },
+            {
+                id: 'loc-2',
+                name: "Manali Food Bank",
+                address: "Old Manali, Manali, Himachal Pradesh",
+                city: "manali",
+                lat: 32.2396,
+                lng: 77.1887,
+                food: "Fruits, dairy products and bread",
+                quantity: "30 servings",
+                urgency: "Urgent (Expires Today)",
+                pinColor: "pin-orange",
+                icon: "fa-apple-whole",
+                donor: "Himalayan Aid Society",
+                phone: "+91 98765 43211"
+            },
+            {
+                id: 'loc-3',
+                name: "Dharamshala NGO Center",
+                address: "McLeod Ganj, Dharamshala, Himachal Pradesh",
+                city: "dharamshala",
+                lat: 32.2190,
+                lng: 76.3234,
+                food: "Prepared nutritious meals and snacks",
+                quantity: "25 servings",
+                urgency: "Available",
+                pinColor: "pin-blue",
+                icon: "fa-bowl-rice",
+                donor: "Kangra Valley Food Bank",
+                phone: "+91 98765 43212"
+            },
+            {
+                id: 'loc-4',
+                name: "Solan Food Relief Hub",
+                address: "The Mall Road, Solan, Himachal Pradesh",
+                city: "solan",
+                lat: 30.9084,
+                lng: 77.0999,
+                food: "Bakery goods, rice and dal packets",
+                quantity: "35 servings",
+                urgency: "Available",
+                pinColor: "pin-green",
+                icon: "fa-bread-slice",
+                donor: "Solan Welfare Foundation",
+                phone: "+91 98765 43213"
+            },
+            {
+                id: 'loc-5',
+                name: "Mandi Seva Samiti",
+                address: "Seri Bazaar, Mandi, Himachal Pradesh",
+                city: "mandi",
+                lat: 31.7087,
+                lng: 76.9320,
+                food: "Cooked meals & packaged dry rations",
+                quantity: "50 servings",
+                urgency: "Available",
+                pinColor: "pin-purple",
+                icon: "fa-hand-holding-heart",
+                donor: "Mandi Community Kitchen",
+                phone: "+91 98765 43214"
+            },
+            {
+                id: 'loc-6',
+                name: "Kullu Valley Relief Center",
+                address: "Dhalpur Ground, Kullu, Himachal Pradesh",
+                city: "kullu",
+                lat: 31.9579,
+                lng: 77.1095,
+                food: "Fresh seasonal fruits & milk packets",
+                quantity: "20 servings",
+                urgency: "Urgent",
+                pinColor: "pin-orange",
+                icon: "fa-leaf",
+                donor: "Kullu Youth Care",
+                phone: "+91 98765 43215"
+            }
+        ];
+
+        // Initialize Map
+        function initMap() {
+            const mapContainer = document.getElementById("map");
+            if (!mapContainer) return;
+
+            // If map instance already exists, remove it before reinitializing
+            if (mapInstance) {
+                mapInstance.remove();
+                mapInstance = null;
+            }
+
+            // Create Leaflet map centered over Himachal Pradesh
+            mapInstance = L.map('map', {
+                center: [31.85, 77.10],
+                zoom: 8,
+                scrollWheelZoom: true
+            });
+
+            // Add OpenStreetMap tile layer (100% Free & Open-Source)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors | FoodShare HP'
+            }).addTo(mapInstance);
+
+            // Load and plot all locations (Static + Dynamic LocalStorage donations)
+            renderAllMapLocations();
+
+            // Invalidate size after layout completes
+            setTimeout(() => {
+                if (mapInstance) {
+                    mapInstance.invalidateSize();
+                }
+            }, 300);
+        }
+
+        // Render both static and dynamically stored donations on the map
+        function renderAllMapLocations() {
+            // Clear existing markers
+            allMarkers.forEach(item => {
+                if (mapInstance && item.marker) {
+                    mapInstance.removeLayer(item.marker);
+                }
+            });
+            allMarkers = [];
+
+            const bounds = L.latLngBounds([]);
+            const combinedLocations = [...sampleFoodLocations];
+
+            // Load user donations from localStorage if present
+            try {
+                const storedDonations = JSON.parse(localStorage.getItem('foodshare_donations') || '[]');
+                storedDonations.forEach((donation, idx) => {
+                    const locStr = (donation.location || '').toLowerCase();
+                    let matchedCoords = null;
+                    let cityKey = 'other';
+
+                    for (const [key, coords] of Object.entries(cityCoordinates)) {
+                        if (locStr.includes(key)) {
+                            matchedCoords = coords;
+                            cityKey = key;
+                            break;
+                        }
+                    }
+
+                    // If matched, add with small jitter so overlapping pins remain visible
+                    if (matchedCoords) {
+                        const jitterLat = (Math.random() - 0.5) * 0.02;
+                        const jitterLng = (Math.random() - 0.5) * 0.02;
+                        combinedLocations.push({
+                            id: `user-don-${idx}`,
+                            name: `${donation.foodName || 'Food Donation'} (Recent)`,
+                            address: donation.location || 'Himachal Pradesh',
+                            city: cityKey,
+                            lat: matchedCoords.lat + jitterLat,
+                            lng: matchedCoords.lng + jitterLng,
+                            food: donation.foodName || 'Donated Food',
+                            quantity: donation.quantity || 'Multiple servings',
+                            urgency: donation.expiryDate ? `Expires: ${donation.expiryDate}` : 'Fresh Donation',
+                            pinColor: 'pin-donor',
+                            icon: 'fa-heart',
+                            donor: donation.donorName || 'Community Donor',
+                            phone: donation.donorPhone || '+91 Donor Hotline'
+                        });
+                    }
+                });
+            } catch (e) {
+                console.warn('Error reading stored donations for map:', e);
+            }
+
+            // Update badge counter
+            const totalPinsEl = document.getElementById('totalMapPins');
+            if (totalPinsEl) {
+                totalPinsEl.textContent = combinedLocations.length;
+            }
+
+            // Add markers
+            combinedLocations.forEach((location) => {
+                // Create custom HTML marker icon
+                const customIcon = L.divIcon({
+                    className: 'custom-pin-container',
+                    html: `
+                        <div class="custom-pin ${location.pinColor || 'pin-green'}">
+                            <i class="fas ${location.icon || 'fa-utensils'}"></i>
+                        </div>
+                        <div class="pin-pulse"></div>
+                    `,
+                    iconSize: [36, 36],
+                    iconAnchor: [18, 36],
+                    popupAnchor: [0, -36]
+                });
+
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon });
+
+                // Create popup content
+                const popupContent = `
+                    <div class="food-popup-card">
+                        <div class="food-popup-header">
+                            <h6><i class="fas ${location.icon || 'fa-utensils'} me-1"></i>${location.name}</h6>
+                            <span class="food-popup-badge">${location.urgency}</span>
+                        </div>
+                        <div class="food-popup-body">
+                            <p><strong><i class="fas fa-box-open text-success me-1"></i>Available:</strong> ${location.food}</p>
+                            <p><strong><i class="fas fa-users text-primary me-1"></i>Quantity:</strong> ${location.quantity}</p>
+                            <p><strong><i class="fas fa-map-marker-alt text-danger me-1"></i>Address:</strong> ${location.address}</p>
+                            <p><strong><i class="fas fa-hand-holding-heart text-warning me-1"></i>Donor:</strong> ${location.donor}</p>
+                        </div>
+                        <div class="food-popup-footer">
+                            <button class="btn btn-sm btn-success" onclick="handleMapPickupRequest('${location.name.replace(/'/g, "\\'")}', '${location.food.replace(/'/g, "\\'")}', '${location.address.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-check-circle me-1"></i>Request
+                            </button>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-directions me-1"></i>Directions
+                            </a>
+                        </div>
+                    </div>
+                `;
+
+                marker.bindPopup(popupContent, { maxWidth: 300, className: 'food-custom-popup' });
+                marker.addTo(mapInstance);
+
+                bounds.extend([location.lat, location.lng]);
+
+                allMarkers.push({
+                    city: location.city,
+                    location: location,
+                    marker: marker
+                });
+            });
+
+            if (combinedLocations.length > 0 && mapInstance) {
+                mapInstance.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+            }
+        }
+
+        // Filter Map by City
+        function filterMap(cityCategory, btnElement) {
+            // Update active button state
+            if (btnElement) {
+                document.querySelectorAll('.map-filter-btn').forEach(btn => btn.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+
+            if (!mapInstance) return;
+
+            const bounds = L.latLngBounds([]);
+            let visibleCount = 0;
+
+            allMarkers.forEach(item => {
+                if (cityCategory === 'all' || item.city === cityCategory) {
+                    item.marker.addTo(mapInstance);
+                    bounds.extend(item.marker.getLatLng());
+                    visibleCount++;
+                } else {
+                    mapInstance.removeLayer(item.marker);
+                }
+            });
+
+            if (visibleCount > 0) {
+                mapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 13 });
+            }
+        }
+
+        // Locate user geolocation
+        function locateUser(btnElement) {
+            if (!navigator.geolocation) {
+                if (typeof showNotification === 'function') {
+                    showNotification('Geolocation is not supported by your browser', 'error');
+                } else {
+                    alert('Geolocation is not supported by your browser');
+                }
+                return;
+            }
+
+            if (btnElement) {
+                document.querySelectorAll('.map-filter-btn').forEach(btn => btn.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+
+            if (typeof showNotification === 'function') {
+                showNotification('Detecting your location...', 'info');
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+
+                    if (mapInstance) {
+                        mapInstance.setView([userLat, userLng], 13);
+
+                        // Add pulse marker for user
+                        const userMarker = L.circleMarker([userLat, userLng], {
+                            radius: 10,
+                            fillColor: '#007bff',
+                            color: '#ffffff',
+                            weight: 3,
+                            opacity: 1,
+                            fillOpacity: 0.9
+                        }).addTo(mapInstance);
+
+                        userMarker.bindPopup('<strong>📍 You are here!</strong><br>Showing nearby food donation centers in your area.').openPopup();
+
+                        if (typeof showNotification === 'function') {
+                            showNotification('Found your location!', 'success');
+                        }
+                    }
+                },
+                (error) => {
+                    console.warn('Geolocation error:', error);
+                    if (typeof showNotification === 'function') {
+                        showNotification('Could not retrieve your location. Showing Himachal Pradesh default map.', 'info');
+                    }
+                    filterMap('all');
+                }
+            );
+        }
+
+        // Handle Map Food Request Button
+        function handleMapPickupRequest(centerName, foodItem, address) {
+            if (typeof currentUser !== 'undefined' && !currentUser) {
+                const loginModalEl = document.getElementById('loginModal');
+                if (loginModalEl) {
+                    const loginModal = new bootstrap.Modal(loginModalEl);
+                    loginModal.show();
+                    if (typeof showNotification === 'function') {
+                        showNotification('Please login to request food pickup', 'info');
+                    }
+                    return;
+                }
+            }
+
+            // Display confirmation alert or trigger notification
+            if (typeof showNotification === 'function') {
+                showNotification(`Request submitted for ${foodItem} from ${centerName}! The donor will contact you.`, 'success');
+            } else {
+                alert(`Request submitted for "${foodItem}" from ${centerName}!\n\nLocation: ${address}\n\nYou will receive a pickup confirmation shortly.`);
+            }
+        }
+
+        // Attach global functions to window
+        window.initMap = initMap;
+        window.filterMap = filterMap;
+        window.locateUser = locateUser;
+        window.handleMapPickupRequest = handleMapPickupRequest;
+
+        // Auto-initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+        });
+
+        // Ensure proper rendering on resize
+        window.addEventListener('resize', function() {
+            if (mapInstance) {
+                mapInstance.invalidateSize();
+            }
+        });
+    </script>
+</body>
+</html>

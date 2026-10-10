@@ -1,0 +1,577 @@
+/* Custom styles for FoodShare */
+
+/* Root variables for consistent theming */
+:root {
+    --primary-green: #2e7d32;
+    --secondary-green: #4caf50;
+    --accent-yellow: #ffeb3b;
+    --warning-orange: #ff9800;
+    --danger-red: #f44336;
+    --light-gray: #f8f9fa;
+    --medium-gray: #6c757d;
+    --dark-gray: #343a40;
+    --success-green: #28a745;
+    --info-blue: #17a2b8;
+}
+
+/* Global styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    line-height: 1.6;
+    color: var(--dark-gray);
+}
+
+/* Navigation enhancements */
+.navbar {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.navbar-brand {
+    transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: var(--primary-green) !important;
+}
+
+/* Hero section enhancements */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+/* Card enhancements */
+.card {
+    border: none;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Feature cards */
+.feature-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card .fas {
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Button enhancements */
+.btn {
+    border-radius: 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, var(--accent-yellow), var(--warning-orange));
+    color: var(--dark-gray);
+    box-shadow: 0 4px 15px rgba(255, 235, 59, 0.3);
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, var(--warning-orange), var(--accent-yellow));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 235, 59, 0.4);
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Map section */
+#map {
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats section */
+.stats-counter {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-yellow), var(--warning-orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Food list styling */
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+    transition: background-color 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: var(--light-gray);
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* Modal enhancements */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    color: white;
+    border-radius: 15px 15px 0 0;
+    border: none;
+}
+
+/* Form enhancements */
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+}
+
+/* Footer enhancements */
+footer {
+    background: linear-gradient(135deg, var(--dark-gray), #2c3e50);
+}
+
+footer h5, footer h6 {
+    color: var(--secondary-green);
+}
+
+footer a:hover {
+    color: var(--accent-yellow) !important;
+    text-decoration: none;
+}
+
+/* Animation utilities */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 60px 0;
+        text-align: center;
+    }
+
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+
+    .stats-counter {
+        font-size: 2rem;
+    }
+
+    .feature-card {
+        margin-bottom: 2rem;
+    }
+
+    .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .display-4 {
+        font-size: 2rem;
+    }
+
+    .display-5 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Loading animation */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(46, 125, 50, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--primary-green);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-gray);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-green);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-green);
+}
+
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.notification.success {
+    border-left: 4px solid var(--success-green);
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.notification.error {
+    border-left: 4px solid var(--danger-red);
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Map section and Leaflet styling */
+#map {
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    z-index: 1;
+    overflow: hidden;
+}
+
+.map-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.map-filter-btn {
+    border-radius: 25px;
+    padding: 7px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid #dee2e6;
+    background: #fff;
+    color: #495057;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.map-filter-btn:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.map-filter-btn.active {
+    background: var(--primary-green);
+    color: white;
+    border-color: var(--primary-green);
+    box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
+}
+
+/* Custom Leaflet Marker Pins */
+.custom-pin-container {
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+}
+
+.custom-pin {
+    width: 36px;
+    height: 36px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+    border: 2px solid #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.custom-pin:hover {
+    transform: rotate(-45deg) scale(1.15);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+.custom-pin i {
+    transform: rotate(45deg);
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.custom-pin.pin-green {
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+}
+
+.custom-pin.pin-orange {
+    background: linear-gradient(135deg, #e65100, #ff9800);
+}
+
+.custom-pin.pin-blue {
+    background: linear-gradient(135deg, #1565c0, #2196f3);
+}
+
+.custom-pin.pin-purple {
+    background: linear-gradient(135deg, #6a1b9a, #ab47bc);
+}
+
+.custom-pin.pin-donor {
+    background: linear-gradient(135deg, #c2185b, #e91e63);
+}
+
+.pin-pulse {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(76, 175, 80, 0.4);
+    top: 0;
+    left: 0;
+    animation: pinPulseAnimation 2s infinite ease-out;
+    pointer-events: none;
+}
+
+@keyframes pinPulseAnimation {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+}
+
+/* Leaflet Popup Custom Styling */
+.leaflet-popup-content-wrapper {
+    padding: 0;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.leaflet-popup-content {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.food-popup-card {
+    min-width: 240px;
+    max-width: 280px;
+}
+
+.food-popup-header {
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    color: white;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.food-popup-header h6 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.food-popup-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.25);
+    display: inline-block;
+    margin-top: 4px;
+}
+
+.food-popup-body {
+    padding: 14px 16px;
+    background: #ffffff;
+    font-size: 0.88rem;
+    color: #333333;
+}
+
+.food-popup-body p {
+    margin-bottom: 8px;
+}
+
+.food-popup-body p:last-child {
+    margin-bottom: 0;
+}
+
+.food-popup-footer {
+    padding: 10px 16px 14px 16px;
+    background: #f8f9fa;
+    border-top: 1px solid #eeeeee;
+    display: flex;
+    gap: 8px;
+}
+
+.food-popup-footer .btn {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    flex: 1;
+}
+
+/* Map marker styles */
+.map-marker {
+    background: var(--primary-green);
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Dashboard styles */
+.dashboard-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+.dashboard-stat {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--light-gray), white);
+    border-radius: 15px;
+    margin-bottom: 1rem;
+}
+
+.dashboard-stat .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-green);
+}
+
+/* Form validation styles */
+.is-invalid {
+    border-color: var(--danger-red) !important;
+}
+
+.invalid-feedback {
+    color: var(--danger-red);
+    font-size: 0.875rem;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus styles for better accessibility */
+.btn:focus,
+.form-control:focus {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .btn,
+    footer {
+        display: none !important;
+    }
+
+    body {
+        color: black !important;
+        background: white !important;
+    }
+}

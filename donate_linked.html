@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodShare - Donate Food</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand text-success" href="index_linked.html">
+                <i class="fas fa-leaf me-2"></i>FoodShare
+            </a>
+            <a href="index_linked.html" class="btn btn-outline-success">← Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="mb-0">
+                            <i class="fas fa-plus me-2"></i>Donate Food
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="donationForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Food Name/Type *</label>
+                                    <input type="text" class="form-control" id="foodName" placeholder="e.g., Fresh Vegetables" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Quantity *</label>
+                                    <input type="text" class="form-control" id="foodQuantity" placeholder="e.g., 50 servings" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Description *</label>
+                                <textarea class="form-control" id="foodDescription" rows="3" placeholder="Describe the food items, their condition, etc." required></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Expiry Date *</label>
+                                    <input type="date" class="form-control" id="foodExpiry" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Pickup Location *</label>
+                                    <input type="text" class="form-control" id="foodLocation" placeholder="Full address for pickup" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Your Name *</label>
+                                    <input type="text" class="form-control" id="donorName" placeholder="Your full name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Contact Number *</label>
+                                    <input type="tel" class="form-control" id="donorPhone" placeholder="Your phone number" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email (optional)</label>
+                                <input type="email" class="form-control" id="donorEmail" placeholder="your.email@example.com">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Food Type</label>
+                                <select class="form-select" id="foodType">
+                                    <option value="vegetables">Fresh Vegetables</option>
+                                    <option value="fruits">Fresh Fruits</option>
+                                    <option value="dairy">Dairy Products</option>
+                                    <option value="bakery">Bakery Items</option>
+                                    <option value="prepared">Prepared Meals</option>
+                                    <option value="canned">Canned Goods</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Additional Notes</label>
+                                <textarea class="form-control" id="additionalNotes" rows="2" placeholder="Any special instructions for pickup, handling, etc."></textarea>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Note:</strong> By submitting this form, you agree to make the donated food available for pickup by verified recipients.
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Donation
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default expiry date to tomorrow
+        document.addEventListener('DOMContentLoaded', function() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('foodExpiry').value = tomorrow.toISOString().split('T')[0];
+        });
+
+        // Handle form submission
+        document.getElementById('donationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const donationData = {
+                foodName: document.getElementById('foodName').value,
+                quantity: document.getElementById('foodQuantity').value,
+                description: document.getElementById('foodDescription').value,
+                expiryDate: document.getElementById('foodExpiry').value,
+                location: document.getElementById('foodLocation').value,
+                donorName: document.getElementById('donorName').value,
+                donorPhone: document.getElementById('donorPhone').value,
+                donorEmail: document.getElementById('donorEmail').value,
+                foodType: document.getElementById('foodType').value,
+                additionalNotes: document.getElementById('additionalNotes').value,
+                timestamp: new Date().toISOString()
+            };
+
+            // Validate required fields
+            if (!donationData.foodName || !donationData.quantity || !donationData.description ||
+                !donationData.expiryDate || !donationData.location || !donationData.donorName || !donationData.donorPhone) {
+                alert('Please fill in all required fields marked with *');
+                return;
+            }
+
+            // Show success message
+            showSuccessModal(donationData);
+        });
+
+        function showSuccessModal(donationData) {
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">
+                                <i class="fas fa-check-circle me-2"></i>Donation Submitted Successfully!
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-heart fa-4x text-success mb-3"></i>
+                                <h4>Thank you for your generous donation!</h4>
+                                <p class="text-muted">Your donation will help feed people in need in your community.</p>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <strong>Food:</strong><br>
+                                    ${donationData.foodName}
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong>Quantity:</strong><br>
+                                    ${donationData.quantity}
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-sm-6">
+                                    <strong>Location:</strong><br>
+                                    ${donationData.location}
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong>Pickup By:</strong><br>
+                                    ${donationData.expiryDate}
+                                </div>
+                            </div>
+
+                            <div class="alert alert-success mt-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                A notification has been sent to nearby recipients. You should receive pickup requests soon!
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" onclick="shareDonation()">
+                                <i class="fas fa-share me-2"></i>Share
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="makeAnotherDonation()">
+                                <i class="fas fa-plus me-2"></i>Donate More
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+
+            // Store donation in localStorage for demo purposes
+            storeDonation(donationData);
+        }
+
+        function storeDonation(donationData) {
+            // Get existing donations
+            let donations = JSON.parse(localStorage.getItem('foodshare_donations') || '[]');
+
+            // Add new donation
+            donations.push(donationData);
+
+            // Keep only last 10 donations
+            if (donations.length > 10) {
+                donations = donations.slice(-10);
+            }
+
+            // Save back to localStorage
+            localStorage.setItem('foodshare_donations', JSON.stringify(donations));
+        }
+
+        function shareDonation() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'FoodShare Donation',
+                    text: 'I just donated food through FoodShare! Join the movement to reduce food waste.',
+                    url: window.location.origin
+                });
+            } else {
+                // Fallback - copy to clipboard
+                const text = `I just donated food through FoodShare! Join the movement to reduce food waste. ${window.location.origin}`;
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Donation details copied to clipboard!');
+                });
+            }
+        }
+
+        function makeAnotherDonation() {
+            // Close modal and reset form
+            const modal = document.querySelector('.modal');
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            bsModal.hide();
+
+            // Reset form
+            document.getElementById('donationForm').reset();
+
+            // Set new expiry date
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('foodExpiry').value = tomorrow.toISOString().split('T')[0];
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

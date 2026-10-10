@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodShare - Find Food</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+            color: white;
+            padding: 60px 0;
+        }
+
+        .food-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .food-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .food-image {
+            height: 200px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 3rem;
+        }
+
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .food-type-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .urgency-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .urgency-high {
+            background: #dc3545;
+            color: white;
+        }
+
+        .urgency-medium {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .urgency-low {
+            background: #28a745;
+            color: white;
+        }
+
+        .donor-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .request-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #28a745;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand text-success" href="index_linked.html">
+                <i class="fas fa-leaf me-2"></i>FoodShare
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index_linked.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="donate_linked.html">Donate Food</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="find_food.html">Find Food</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex">
+                    <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="fas fa-sign-in-alt me-1"></i>Login
+                    </button>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#registerModal">
+                        <i class="fas fa-user-plus me-1"></i>Sign Up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4">
+                        Find Food Near You
+                    </h1>
+                    <p class="lead mb-4">
+                        Browse available food donations in your area. Connect with generous donors
+                        and help reduce food waste while feeding those in need.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <button class="btn btn-warning btn-lg px-4" onclick="refreshFoodList()">
+                            <i class="fas fa-sync-alt me-2"></i>Refresh List
+                        </button>
+                        <button class="btn btn-outline-light btn-lg px-4" onclick="showMap()">
+                            <i class="fas fa-map-marked-alt me-2"></i>View Map
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="text-center">
+                        <i class="fas fa-search fa-4x text-warning mb-3"></i>
+                        <h3 class="text-warning">Available Now</h3>
+                        <div id="availableCount" class="h4 mb-0">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <select class="form-select" id="foodTypeFilter">
+                        <option value="">All Food Types</option>
+                        <option value="vegetables">Fresh Vegetables</option>
+                        <option value="fruits">Fresh Fruits</option>
+                        <option value="dairy">Dairy Products</option>
+                        <option value="bakery">Bakery Items</option>
+                        <option value="prepared">Prepared Meals</option>
+                        <option value="canned">Canned Goods</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="locationFilter">
+                        <option value="">All Locations</option>
+                        <option value="shimla">Shimla</option>
+                        <option value="manali">Manali</option>
+                        <option value="dharamshala">Dharamshala</option>
+                        <option value="other">Other Areas</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="urgencyFilter">
+                        <option value="">All Urgency Levels</option>
+                        <option value="high">High Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="low">Low Priority</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success" onclick="applyFilters()">
+                            <i class="fas fa-filter me-1"></i>Apply
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                            <i class="fas fa-times me-1"></i>Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-number" id="totalFood">0</div>
+                        <div>Total Available</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-number" id="todayFood">0</div>
+                        <div>Added Today</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-number" id="urgentFood">0</div>
+                        <div>Urgent Items</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-number" id="yourRequests">0</div>
+                        <div>Your Requests</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Food Listings -->
+    <section class="py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 mb-4">
+                    <h2 class="h3 fw-bold">Available Food Donations</h2>
+                    <p class="text-muted">Click on any item to request pickup</p>
+                </div>
+            </div>
+
+            <div id="foodListings" class="row">
+                <!-- Food items will be loaded here -->
+                <div class="col-12 text-center">
+                    <div class="loading-spinner"></div>
+                    <p>Loading available food...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="text-success mb-3">
+                        <i class="fas fa-leaf me-2"></i>FoodShare
+                    </h5>
+                    <p class="text-muted">
+                        Connecting communities to reduce food waste and fight hunger.
+                        Every donation makes a difference.
+                    </p>
+                </div>
+
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="index_linked.html" class="text-muted text-decoration-none">Home</a></li>
+                        <li><a href="donate_linked.html" class="text-muted text-decoration-none">Donate Food</a></li>
+                        <li><a href="find_food.html" class="text-muted text-decoration-none">Find Food</a></li>
+                        <li><a href="#about" class="text-muted text-decoration-none">About Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold">For Donors</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="donate_linked.html" class="text-muted text-decoration-none">Restaurants</a></li>
+                        <li><a href="donate_linked.html" class="text-muted text-decoration-none">Grocery Stores</a></li>
+                        <li><a href="donate_linked.html" class="text-muted text-decoration-none">Households</a></li>
+                        <li><a href="donate_linked.html" class="text-muted text-decoration-none">Food Banks</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold">For Receivers</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted text-decoration-none">NGOs</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Shelters</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Orphanages</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Individuals</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted">© 2024 FoodShare. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-muted text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-muted text-decoration-none">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Login to FoodShare</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Login as:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="userType" id="donorLogin" value="donor" checked>
+                                <label class="form-check-label" for="donorLogin">Food Donor</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="userType" id="receiverLogin" value="receiver">
+                                <label class="form-check-label" for="receiverLogin">Food Receiver</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Join FoodShare</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="mb-3">
+                            <label for="registerName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="registerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="registerEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="registerPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPhone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="registerPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerLocation" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="registerLocation" placeholder="City, State" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Register as:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="userType" id="donorRegister" value="donor" checked>
+                                <label class="form-check-label" for="donorRegister">Food Donor</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="userType" id="receiverRegister" value="receiver">
+                                <label class="form-check-label" for="receiverRegister">Food Receiver</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Create Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Food Request Modal -->
+    <div class="modal fade" id="requestModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Request Food Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="requestFormContent">
+                        <!-- Content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="script_working.js"></script>
+
+    <script>
+        // Find Food specific functionality
+        let currentUser = null;
+        let allFoodItems = [];
+        let filteredItems = [];
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeFindFoodPage();
+        });
+
+        function initializeFindFoodPage() {
+            // Load user if logged in
+            const userData = localStorage.getItem('foodshare_user');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                updateUIForLoggedInUser(currentUser);
+            }
+
+            // Load food items
+            loadFoodItems();
+
+            // Initialize filters
+            initializeFilters();
+
+            // Initialize forms
+            initializeForms();
+        }
+
+        function updateUIForLoggedInUser(user) {
+            const navButtons = document.querySelector('.d-flex');
+            if (navButtons) {
+                navButtons.innerHTML = `
+                    <div class="dropdown">
+                        <button class="btn btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>${user.name}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="showDashboard()"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="showProfile()"><i class="fas fa-user-edit me-2"></i>Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        function loadFoodItems() {
+            // Load from localStorage first
+            const storedDonations = JSON.parse(localStorage.getItem('foodshare_donations') || '[]');
+
+            // Add sample data if no donations exist
+            if (storedDonations.length === 0) {
+                allFoodItems = [
+                    {
+                        id: 1,
+                        name: "Fresh Vegetables Mix",
+                        type: "vegetables",
+                        quantity: "25 kg",
+                        description: "Assorted fresh vegetables including tomatoes, onions, potatoes, and leafy greens. Perfect for cooking meals.",
+                        location: "Shimla, Himachal Pradesh",
+                        donor: "Green Valley Restaurant",
+                        donorPhone: "+91 98765 43210",
+                        urgency: "medium",
+                        expiryDate: "2024-01-15",
+                        pickupTime: "10:00 AM - 6:00 PM",
+                        image: "🥬",
+                        timestamp: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        name: "Bakery Items",
+                        type: "bakery",
+                        quantity: "50 pieces",
+                        description: "Fresh bread, muffins, and pastries from morning bake. Still fresh and perfect for immediate consumption.",
+                        location: "Manali, Himachal Pradesh",
+                        donor: "Mountain View Bakery",
+                        donorPhone: "+91 98765 43211",
+                        urgency: "high",
+                        expiryDate: "2024-01-14",
+                        pickupTime: "9:00 AM - 5:00 PM",
+                        image: "🍞",
+                        timestamp: new Date().toISOString()
+                    },
+                    {
+                        id: 3,
+                        name: "Prepared Meals",
+                        type: "prepared",
+                        quantity: "30 servings",
+                        description: "Home-cooked meals including dal, rice, and vegetables. Nutritious and ready to serve.",
+                        location: "Dharamshala, Himachal Pradesh",
+                        donor: "Community Kitchen",
+                        donorPhone: "+91 98765 43212",
+                        urgency: "low",
+                        expiryDate: "2024-01-16",
+                        pickupTime: "11:00 AM - 7:00 PM",
+                        image: "🍽️",
+                        timestamp: new Date().toISOString()
+                    },
+                    {
+                        id: 4,
+                        name: "Fresh Fruits",
+                        type: "fruits",
+                        quantity: "15 kg",
+                        description: "Seasonal fruits including apples, oranges, and bananas. Fresh and nutritious.",
+                        location: "Shimla, Himachal Pradesh",
+                        donor: "Local Grocery Store",
+                        donorPhone: "+91 98765 43213",
+                        urgency: "medium",
+                        expiryDate: "2024-01-17",
+                        pickupTime: "8:00 AM - 8:00 PM",
+                        image: "🍎",
+                        timestamp: new Date().toISOString()
+                    }
+                ];
+            } else {
+                // Convert stored donations to food items format
+                allFoodItems = storedDonations.map((donation, index) => ({
+                    id: Date.now() + index,
+                    name: donation.foodName,
+                    type: donation.foodType || 'other',
+                    quantity: donation.quantity,
+                    description: donation.description,
+                    location: donation.location,
+                    donor: donation.donorName,
+                    donorPhone: donation.donorPhone || 'N/A',
+                    urgency: calculateUrgency(donation.expiryDate),
+                    expiryDate: donation.expiryDate,
+                    pickupTime: "Flexible",
+                    image: getFoodEmoji(donation.foodType),
+                    timestamp: donation.timestamp
+                }));
+            }
+
+            filteredItems = [...allFoodItems];
+            displayFoodItems();
+            updateStatistics();
+        }
+
+        function calculateUrgency(expiryDate) {
+            const today = new Date();
+            const expiry = new Date(expiryDate);
+            const daysDiff = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+
+            if (daysDiff <= 1) return 'high';
+            if (daysDiff <= 3) return 'medium';
+            return 'low';
+        }
+
+        function getFoodEmoji(foodType) {
+            const emojis = {
+                'vegetables': '🥬',
+                'fruits': '🍎',
+                'dairy': '🥛',
+                'bakery': '🍞',
+                'prepared': '🍽️',
+                'canned': '🥫',
+                'other': '🍽️'
+            };
+            return emojis[foodType] || '🍽️';
+        }
+
+        function displayFoodItems() {
+            const container = document.getElementById('foodListings');
+
+            if (filteredItems.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h4>No food items found</h4>
+                        <p class="text-muted">Try adjusting your filters or check back later.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredItems.map(item => `
+                <div class="col-lg-6 col-xl-4">
+                    <div class="card food-card h-100">
+                        <div class="position-relative">
+                            <div class="food-image">
+                                <span style="font-size: 4rem;">${item.image}</span>
+                            </div>
+                            <div class="urgency-badge urgency-${item.urgency}">
+                                ${item.urgency.toUpperCase()}
+                            </div>
+                            <div class="food-type-badge">
+                                ${item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                            </div>
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">${item.name}</h5>
+                            <p class="card-text text-muted flex-grow-1">${item.description}</p>
+
+                            <div class="mb-3">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">📦 Quantity</small><br>
+                                        <strong>${item.quantity}</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">📅 Expires</small><br>
+                                        <strong>${new Date(item.expiryDate).toLocaleDateString()}</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="donor-info">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">👤 Donor</small><br>
+                                        <strong>${item.donor}</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">📍 Location</small><br>
+                                        <strong>${item.location}</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-success request-btn" onclick="requestFoodItem(${item.id})">
+                                <i class="fas fa-hand-paper me-1"></i>Request Food
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function requestFoodItem(itemId) {
+            if (!currentUser) {
+                showNotification('Please login to request food', 'error');
+                return;
+            }
+
+            const item = filteredItems.find(f => f.id === itemId);
+            if (!item) {
+                showNotification('Food item not found', 'error');
+                return;
+            }
+
+            // Show request confirmation modal
+            showRequestModal(item);
+        }
+
+        function showRequestModal(item) {
+            const modal = document.getElementById('requestModal');
+            const content = document.getElementById('requestFormContent');
+
+            content.innerHTML = `
+                <div class="text-center mb-4">
+                    <span style="font-size: 4rem;">${item.image}</span>
+                    <h4>${item.name}</h4>
+                    <p class="text-muted">${item.description}</p>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Quantity:</strong> ${item.quantity}
+                    </div>
+                    <div class="col-6">
+                        <strong>Location:</strong> ${item.location}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Donor:</strong> ${item.donor}
+                    </div>
+                    <div class="col-6">
+                        <strong>Expires:</strong> ${new Date(item.expiryDate).toLocaleDateString()}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Pickup Time Preference</label>
+                    <select class="form-select" id="pickupTime">
+                        <option value="asap">As soon as possible</option>
+                        <option value="morning">Morning (9 AM - 12 PM)</option>
+                        <option value="afternoon">Afternoon (12 PM - 5 PM)</option>
+                        <option value="evening">Evening (5 PM - 8 PM)</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Additional Notes (Optional)</label>
+                    <textarea class="form-control" id="requestNotes" rows="2" placeholder="Any special requirements or questions..."></textarea>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Note:</strong> The donor will be notified of your request. They will contact you directly to coordinate pickup.
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-success" onclick="submitFoodRequest(${item.id})">
+                        <i class="fas fa-paper-plane me-2"></i>Send Request
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            `;
+
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+        }
+
+        function submitFoodRequest(itemId) {
+            const item = filteredItems.find(f => f.id === itemId);
+            if (!item) {
+                showNotification('Food item not found', 'error');
+                return;
+            }
+
+            const pickupTime = document.getElementById('pickupTime').value;
+            const notes = document.getElementById('requestNotes').value;
+
+            // Store request
+            const request = {
+                id: Date.now(),
+                itemId: itemId,
+                itemName: item.name,
+                requesterName: currentUser.name,
+                requesterEmail: currentUser.email,
+                requesterPhone: currentUser.phone,
+                pickupTime: pickupTime,
+                notes: notes,
+                status: 'pending',
+                timestamp: new Date().toISOString()
+            };
+
+            // Save to localStorage
+            const requests = JSON.parse(localStorage.getItem('foodshare_requests') || '[]');
+            requests.push(request);
+            localStorage.setItem('foodshare_requests', JSON.stringify(requests));
+
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('requestModal'));
+            modal.hide();
+
+            showNotification(`Request sent for ${item.name}! The donor will contact you soon.`, 'success');
+            updateStatistics();
+        }
+
+        function initializeFilters() {
+            document.getElementById('foodTypeFilter').addEventListener('change', applyFilters);
+            document.getElementById('locationFilter').addEventListener('change', applyFilters);
+            document.getElementById('urgencyFilter').addEventListener('change', applyFilters);
+        }
+
+        function applyFilters() {
+            const foodType = document.getElementById('foodTypeFilter').value;
+            const location = document.getElementById('locationFilter').value;
+            const urgency = document.getElementById('urgencyFilter').value;
+
+            filteredItems = allFoodItems.filter(item => {
+                if (foodType && item.type !== foodType) return false;
+                if (location && !item.location.toLowerCase().includes(location.toLowerCase())) return false;
+                if (urgency && item.urgency !== urgency) return false;
+                return true;
+            });
+
+            displayFoodItems();
+        }
+
+        function clearFilters() {
+            document.getElementById('foodTypeFilter').value = '';
+            document.getElementById('locationFilter').value = '';
+            document.getElementById('urgencyFilter').value = '';
+            filteredItems = [...allFoodItems];
+            displayFoodItems();
+        }
+
+        function updateStatistics() {
+            document.getElementById('totalFood').textContent = allFoodItems.length;
+            document.getElementById('availableCount').textContent = allFoodItems.length;
+
+            const today = new Date().toDateString();
+            const todayItems = allFoodItems.filter(item =>
+                new Date(item.timestamp).toDateString() === today
+            );
+            document.getElementById('todayFood').textContent = todayItems.length;
+
+            const urgentItems = allFoodItems.filter(item => item.urgency === 'high');
+            document.getElementById('urgentFood').textContent = urgentItems.length;
+
+            const userRequests = JSON.parse(localStorage.getItem('foodshare_requests') || '[]');
+            const userRequestCount = userRequests.filter(req => req.requesterEmail === currentUser?.email).length;
+            document.getElementById('yourRequests').textContent = userRequestCount;
+        }
+
+        function refreshFoodList() {
+            showNotification('Refreshing food list...', 'info');
+            loadFoodItems();
+        }
+
+        function showMap() {
+            // Scroll to map section on main page
+            window.location.href = 'index_linked.html#map-section';
+        }
+
+        function showDashboard() {
+            if (!currentUser) {
+                showNotification('Please login to access dashboard', 'error');
+                return;
+            }
+
+            // Create and show dashboard
+            showDashboardModal();
+        }
+
+        function showProfile() {
+            showNotification('Profile feature coming soon!', 'info');
+        }
+
+        function logout() {
+            localStorage.removeItem('foodshare_user');
+            currentUser = null;
+            location.reload();
+        }
+
+        function initializeForms() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const userType = document.querySelector('input[name="userType"]:checked').value;
+
+                if (!email || !password) {
+                    showNotification('Please fill in all fields', 'error');
+                    return;
+                }
+
+                currentUser = {
+                    name: email.split('@')[0],
+                    email: email,
+                    user_type: userType,
+                    id: Date.now()
+                };
+
+                localStorage.setItem('foodshare_user', JSON.stringify(currentUser));
+                updateUIForLoggedInUser(currentUser);
+
+                const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                modal.hide();
+
+                showNotification(`Welcome back, ${currentUser.name}!`, 'success');
+            });
+
+            // Register form
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const phone = document.getElementById('registerPhone').value;
+                const location = document.getElementById('registerLocation').value;
+                const userType = document.querySelector('input[name="userType"]:checked').value;
+
+                if (!name || !email || !password || !phone || !location) {
+                    showNotification('Please fill in all fields', 'error');
+                    return;
+                }
+
+                currentUser = {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    location: location,
+                    user_type: userType,
+                    id
